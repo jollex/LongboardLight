@@ -1,11 +1,30 @@
+#/usr/bin/env python
+
+################################################################################
+# IMPORTS
+
 from bibliopixel.led import *
 from bibliopixel.drivers.LPD8806 import *
 from bibliopixel.animation import BaseStripAnim
+
 from adxl345 import ADXL345
-import sys, signal, time, os, threading
+
 import RPi.GPIO as GPIO
 
-NUM_LEDS=24
+import sys, signal, time, os, threading
+
+################################################################################
+# DATA DEFINITIONS
+
+# An Animation is a [String, Integer, [Color, ...]]
+# Interpretation: The String is the name of a class inheriting from the
+# BaseStripAnim class, the Integer is the FPS to run the animation at, and the
+# list of Colors is a list of any colors that the animation takes in.
+
+################################################################################
+# CONSTANTS
+
+# colors
 RAINBOW=[colors.Red,\
          colors.Orange,\
          colors.Yellow,\
@@ -21,28 +40,43 @@ MY_COLORS= [(209, 54, 68),\
 TRICOLOR=  [(239,65,53),
             (255, 255, 255),
             (0, 85, 164)]
-THRESHOLD = 8
 
-#ANIMATIONS = [
-#    ('StaticColorsAnim', 1, [colors.Black]),
-#    ('GradiantAnim', 200, MY_COLORS),
-#    ('StaticColorsAnim', 1, [colors.White]),
-#    ('ColorStepperAnim', 4, MY_COLORS),
-#    ('ColorStepperAnim', 3, TRICOLOR),
-#    ('StaticColorsAnim', 1, [colors.Red, colors.Green, colors.Green, colors.Red]),
-#    ('RotationAnim', 24, RAINBOW),
-#    ('BetterAccelerationAnim', 200, [colors.Red, colors.Green])]
-ANIMATIONS = [
+# misc
+BUTTON_GPIO_PORT = 22
+
+# number of LEDs
+SKATE_LEDS=20
+ROOM_LEDS=24
+NUM_LEDS=SKATE_LEDS
+
+# animations
+SKATE = [
+    ('StaticColorsAnim', 1, [colors.Black]),
+    ('GradiantAnim', 200, MY_COLORS),
+    ('StaticColorsAnim', 1, [colors.White]),
+    ('ColorStepperAnim', 4, MY_COLORS),
+    ('ColorStepperAnim', 3, TRICOLOR),
+    ('StaticColorsAnim', 1,
+        [colors.Red, colors.Green, colors.Green, colors.Red]),
+    ('RotationAnim', 24, RAINBOW),
+    ('BetterAccelerationAnim', 200, [colors.Red, colors.Green])]
+ROOM = [
     ('StaticColorsAnim', 1, [colors.Black]),
     ('GradiantAnim', 12, MY_COLORS),
     ('StaticColorsAnim', 1, [colors.White])]
+ANIMATIONS = SKATE
+
+################################################################################
+# ANIMATIONS
 
 class AccelerationAnim(BaseStripAnim):
-    def __init__(self, led, start=0, end=-1):
+    def __init__(self, led, colors, start=0, end=-1):
         super(AccelerationAnim, self).__init__(led, start, end)
         self.color = colors.Red
 
     def step(self, amt=1):
+        THRESHOLD = 8
+
         axes = adxl345.getAxes(False)
 
         if abs(axes['y']) < THRESHOLD:
@@ -143,8 +177,13 @@ class StaticColorsAnim(BaseStripAnim):
             for j in range(ledsPerSection):
                 self._led.set((i * ledsPerSection) + j, self._colors[i])
 
+################################################################################
+# Main
 
 def wait_for_button_press():
+    """
+    Loops forever until a button press is detected on GPIO port 22
+    """
     prev_input = 0
     while True:
         input = GPIO.input(22)
@@ -152,25 +191,33 @@ def wait_for_button_press():
             return
         prev_input = input
 
-def run_anims(led):
+def run_anims(animations, led):
+    """
+    Runs the given animations using the LEDStrip led
+
+    :param animations: A list of Animations
+    :param led: The LEDStrip to run animations on
+    """
     i = 0
     while True:
-        animDesc = ANIMATIONS[i % len(ANIMATIONS)]
-        constructor = globals()[animDesc[0]]
-        if (len(animDesc) > 2):
-            anim = constructor(led, animDesc[2])
-        else:
-            anim = constructor(led)
-        anim.run(fps=animDesc[1], threaded=True)
+        animation = animations[i]
+        Constructor, fps, colors = animation
+        animation_instance = Constructor(led, colors)
+        animation_instance.run(fps=fps, threaded=True)
         wait_for_button_press()
         time.sleep(.5)
         anim.stopThread()
-        i += 1
+        i = (i + 1) % len(animations)
 
 def main():
+    """
+    Main function, runs forever, running one Animation at a time from
+    ANIMATIONS, switching to the next animation whenever a button press is
+    received on BUTTON_GPIO_PORT
+    """
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(22, GPIO.OUT)
+    GPIO.setup(BUTTON_GPIO_PORT, GPIO.OUT)
 
     global adxl345
     adxl345 = ADXL345()
@@ -178,7 +225,7 @@ def main():
     driver = DriverLPD8806(NUM_LEDS, c_order=ChannelOrder.GRB)
     led = LEDStrip(driver)
 
-    run_anims(led)
+    run_anims(ANIMATIONS, led)
 
 if __name__ == '__main__':
     main()
