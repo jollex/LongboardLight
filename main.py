@@ -24,7 +24,6 @@ import argparse, sys, signal, time, os, threading
 ################################################################################
 # CONSTANTS
 
-# colors
 RAINBOW=[colors.Red,
          colors.Orange,
          colors.Yellow,
@@ -41,15 +40,13 @@ TRICOLOR=  [(239,65,53),
             (255, 255, 255),
             (0, 85, 164)]
 
-# misc
 BUTTON_GPIO_PORT = 22
 
-# number of LEDs
 SKATE_LEDS=20
 ROOM_LEDS=24
-NUM_LEDS=SKATE_LEDS
 
-# animation lists
+DEFAULT_NUM_LEDS=SKATE_LEDS
+
 SKATE = [
     ('StaticColorsAnim', 1, [colors.Black]),
     ('GradiantAnim', 200, MY_COLORS),
