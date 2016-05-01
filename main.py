@@ -184,11 +184,11 @@ class StaticColorsAnim(BaseStripAnim):
 
 def wait_for_button_press():
     """
-    Loops forever until a button press is detected on GPIO port 22
+    Loops forever until a button press is detected on BUTTON_GPIO_PORT
     """
     prev_input = 0
     while True:
-        input = GPIO.input(22)
+        input = GPIO.input(BUTTON_GPIO_PORT)
         if (not prev_input) and input:
             return
         prev_input = input
