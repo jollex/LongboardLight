@@ -208,7 +208,7 @@ def run_anims(animations, led):
         wait_for_button_press()
         time.sleep(.5)
 
-        anim.stopThread()
+        animation_instance.stopThread()
 
         i = (i + 1) % len(animations)
 
