@@ -5,6 +5,7 @@
 
 from bibliopixel import colors
 from bibliopixel.led import LEDStrip
+from bibliopixel.driver_base import ChannelOrder
 from bibliopixel.drivers.LPD8806 import DriverLPD8806
 from bibliopixel.animation import BaseStripAnim
 
@@ -26,17 +27,17 @@ import sys, signal, time, os, threading
 # CONSTANTS
 
 # colors
-RAINBOW=[colors.Red,\
-         colors.Orange,\
-         colors.Yellow,\
-         colors.Green,\
-         colors.Blue,\
+RAINBOW=[colors.Red,
+         colors.Orange,
+         colors.Yellow,
+         colors.Green,
+         colors.Blue,
          colors.Indigo]
-MY_COLORS= [(209, 54, 68),\
-            (239, 180, 110),\
-            (254, 255, 238),\
-            (73, 178, 161),\
-            (53, 85, 108),\
+MY_COLORS= [(209, 54, 68),
+            (239, 180, 110),
+            (254, 255, 238),
+            (73, 178, 161),
+            (53, 85, 108),
             (93, 81, 215)]
 TRICOLOR=  [(239,65,53),
             (255, 255, 255),
