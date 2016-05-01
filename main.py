@@ -3,6 +3,7 @@
 ################################################################################
 # IMPORTS
 
+from bibliopixel import colors
 from bibliopixel.led import LEDStrip
 from bibliopixel.drivers.LPD8806 import DriverLPD8806
 from bibliopixel.animation import BaseStripAnim
