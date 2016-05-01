@@ -200,13 +200,16 @@ def run_anims(animations, led):
     """
     i = 0
     while True:
-        animation = animations[i]
-        Constructor, fps, colors = animation
-        animation_instance = Constructor(led, colors)
+        constructor, fps, colors = animations[i]
+
+        animation_instance = globals()[constructor](led, colors)
         animation_instance.run(fps=fps, threaded=True)
+
         wait_for_button_press()
         time.sleep(.5)
+
         anim.stopThread()
+
         i = (i + 1) % len(animations)
 
 def main():
