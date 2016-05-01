@@ -5,7 +5,7 @@
 
 from bibliopixel import colors
 from bibliopixel.led import LEDStrip
-from bibliopixel.driver_base import ChannelOrder
+from bibliopixel.drivers.driver_base import ChannelOrder
 from bibliopixel.drivers.LPD8806 import DriverLPD8806
 from bibliopixel.animation import BaseStripAnim
 
