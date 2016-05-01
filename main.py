@@ -45,7 +45,7 @@ BUTTON_GPIO_PORT = 22
 SKATE_LEDS=20
 ROOM_LEDS=24
 
-DEFAULT_NUM_LEDS=SKATE_LEDS
+DEFAULT_NUM_LEDS=ROOM_LEDS
 
 SKATE = [
     ('StaticColorsAnim', 1, [colors.Black]),
@@ -222,6 +222,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'animations',
+        nargs='?',
         choices=ANIMATION_LISTS.keys(),
         default=DEFAULT_ANIMATION,
         type=str,
@@ -229,6 +230,7 @@ def main():
             ANIMATION_LISTS.keys()))
     parser.add_argument(
         'num_leds',
+        nargs='?',
         default=DEFAULT_NUM_LEDS,
         type=int,
         help='The number of leds on the LED strip being used')
