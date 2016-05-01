@@ -1,5 +1,3 @@
-#/usr/bin/env python
-
 ################################################################################
 # IMPORTS
 
@@ -13,7 +11,7 @@ from adxl345 import ADXL345
 
 import RPi.GPIO as GPIO
 
-import sys, signal, time, os, threading
+import argparse, sys, signal, time, os, threading
 
 ################################################################################
 # DATA DEFINITIONS
@@ -51,7 +49,7 @@ SKATE_LEDS=20
 ROOM_LEDS=24
 NUM_LEDS=SKATE_LEDS
 
-# animations
+# animation lists
 SKATE = [
     ('StaticColorsAnim', 1, [colors.Black]),
     ('GradiantAnim', 200, MY_COLORS),
@@ -66,7 +64,11 @@ ROOM = [
     ('StaticColorsAnim', 1, [colors.Black]),
     ('GradiantAnim', 12, MY_COLORS),
     ('StaticColorsAnim', 1, [colors.White])]
-ANIMATIONS = SKATE
+
+ANIMATION_LISTS = {'ROOM':  ROOM,
+                   'SKATE': SKATE}
+
+DEFAULT_ANIMATION = 'ROOM'
 
 ################################################################################
 # ANIMATIONS
@@ -220,6 +222,21 @@ def main():
     ANIMATIONS, switching to the next animation whenever a button press is
     received on BUTTON_GPIO_PORT
     """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'animations',
+        choices=ANIMATION_LISTS.keys(),
+        default=DEFAULT_ANIMATION,
+        type=str,
+        help='The list of animations to run, one of {}'.format(
+            ANIMATION_LISTS.keys()))
+    parser.add_argument(
+        'num_leds',
+        default=DEFAULT_NUM_LEDS,
+        type=int,
+        help='The number of leds on the LED strip being used')
+    args = parser.parse_args()
+
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(BUTTON_GPIO_PORT, GPIO.OUT)
@@ -227,10 +244,10 @@ def main():
     global adxl345
     adxl345 = ADXL345()
 
-    driver = DriverLPD8806(NUM_LEDS, c_order=ChannelOrder.GRB)
+    driver = DriverLPD8806(args.num_leds, c_order=ChannelOrder.GRB)
     led = LEDStrip(driver)
 
-    run_anims(ANIMATIONS, led)
+    run_anims(ANIMATION_LISTS[args.animations], led)
 
 if __name__ == '__main__':
     main()
