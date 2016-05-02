@@ -16,7 +16,7 @@ import argparse, sys, signal, time, os, threading
 ################################################################################
 # DATA DEFINITIONS
 
-# An Animation is a [String, Integer, [Color, ...]]
+# An Animation is a tuple (String, Integer, [Color, ...])
 # Interpretation: The String is the name of a class inheriting from the
 # BaseStripAnim class, the Integer is the FPS to run the animation at, and the
 # list of Colors is a list of any colors that the animation takes in.
@@ -54,16 +54,14 @@ SKATE = [
     ('ColorStepperAnim', 4, MY_COLORS),
     ('ColorStepperAnim', 3, TRICOLOR),
     ('StaticColorsAnim', 1,
-        [colors.Red, colors.Green, colors.Green, colors.Red]),
-    ('RotationAnim', 24, RAINBOW),
-    ('BetterAccelerationAnim', 200, [colors.Red, colors.Green])]
+        [colors.Red, colors.White, colors.White, colors.Red]),
+    ('RotationAnim', 24, RAINBOW)]
 ROOM = [
     ('StaticColorsAnim', 1, [colors.Black]),
     ('GradiantAnim', 12, MY_COLORS),
     ('StaticColorsAnim', 1, [colors.White])]
 
-ANIMATION_LISTS = {'ROOM':  ROOM,
-                   'SKATE': SKATE}
+ANIMATION_LISTS = ['ROOM', 'SKATE']
 
 DEFAULT_ANIMATION = 'ROOM'
 
