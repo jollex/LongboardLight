@@ -61,7 +61,8 @@ ROOM = [
     ('GradiantAnim', 12, MY_COLORS),
     ('StaticColorsAnim', 1, [colors.White])]
 
-ANIMATION_LISTS = ['ROOM', 'SKATE']
+ANIMATION_LISTS = {'ROOM': ROOM,
+                   'SKATE': SKATE}
 
 DEFAULT_ANIMATION = 'ROOM'
 
