@@ -55,7 +55,8 @@ SKATE = [
     ('ColorStepperAnim', 3, TRICOLOR),
     ('StaticColorsAnim', 1,
         [colors.Red, colors.White, colors.White, colors.Red]),
-    ('RotationAnim', 24, RAINBOW)]
+    ('RotationAnim', 24, RAINBOW),
+    ('RotationAnim', 24, MY_COLORS)]
 ROOM = [
     ('StaticColorsAnim', 1, [colors.Black]),
     ('GradiantAnim', 12, MY_COLORS),
